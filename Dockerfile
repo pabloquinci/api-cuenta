@@ -1,6 +1,6 @@
 FROM openjdk:21-slim
 
-LABEL mentainer="javaguides.net@gmail.com"
+LABEL mentainer="Backend Challenge - API Cuenta"
 
 WORKDIR /app
 
