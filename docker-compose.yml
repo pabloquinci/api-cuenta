@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  api-cliente:
+    container_name: api-cliente
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=jdbc:mysql://localhost:3306/devsu?allowPublicKeyRetrieval=true&useSSL=false
+      - DATABASE_NAME:devsu
+      - DATABASE_PASSWORD:my_secret_pw
+
+
+networks:
+  springboot-mysql-net:
