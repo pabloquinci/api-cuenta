@@ -1,11 +1,13 @@
 package com.devsu.apicuenta.service;
 
+import com.devsu.apicuenta.configuration.CacheConfig;
 import com.devsu.apicuenta.dto.*;
 import com.devsu.apicuenta.exception.CuentaNotFoundExcdeption;
 import com.devsu.apicuenta.model.Cuenta;
 import com.devsu.apicuenta.repository.CuentaRepository;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,6 +30,7 @@ public class CuentaService {
                 .estado(creacionCuentaDTO.getEstado())
                 .numCuenta(creacionCuentaDTO.getNumCuenta())
                 .saldoInicial(creacionCuentaDTO.getSaldoInicial())
+                .saldoDisponible(creacionCuentaDTO.getSaldoInicial())
                 .estado("OK")
                 .build();
 
@@ -72,8 +75,9 @@ public class CuentaService {
     }
 
 //    @Cacheable(cacheNames = CacheConfig.USER_CACHE, unless = "#result == null")
-
+    @Cacheable(cacheNames = CacheConfig.CUENTA_CACHE, unless = "#result == null")
     public Optional<CuentasResponseDTO> getCuentas(){
+
         List<Cuenta> cuentas=this.cuentaRepository.findAll();
         CuentasResponseDTO cuentasDTO=CuentasResponseDTO.builder().cuentas(new ArrayList<>()).build();
         if(cuentas.size()!=0){

@@ -15,12 +15,12 @@ import java.util.Map;
 @Configuration
 public class CacheConfig {
 
-    public static final String USER_CACHE = "user-cache";
+    public static final String CUENTA_CACHE = "cuenta-cache";
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
-        redisCacheConfigurationMap.put(USER_CACHE, createConfig(1, ChronoUnit.MINUTES));
+        redisCacheConfigurationMap.put(CUENTA_CACHE, createConfig(1, ChronoUnit.MINUTES));
 
         return RedisCacheManager
                 .builder(redisConnectionFactory)

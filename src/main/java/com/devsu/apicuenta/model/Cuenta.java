@@ -1,5 +1,6 @@
 package com.devsu.apicuenta.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +28,14 @@ public class Cuenta {
     @Column
     private BigDecimal saldoInicial;
     @Column
+    private BigDecimal saldoDisponible;
+    @Column
     private String estado;
+    @Column
+    private Integer dniCliente;
 
     @OneToMany(mappedBy = "cuenta", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Movimiento> movimientos=new ArrayList<>();
 
 }
