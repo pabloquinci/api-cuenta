@@ -23,7 +23,7 @@ public class Cuenta {
     @Column
     private Integer numCuenta;
     @Column
-    private String tipoCUenta;
+    private String tipoCuenta;
     @Column
     private BigDecimal saldoInicial;
     @Column

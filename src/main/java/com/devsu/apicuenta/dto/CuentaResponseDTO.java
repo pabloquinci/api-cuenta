@@ -1,7 +1,7 @@
 package com.devsu.apicuenta.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,14 +13,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
-public class CreacionCuentaDTO {
-    @NotNull
+public class CuentaResponseDTO {
+    private Long idCuenta;
     private Integer numCuenta;
-    @NotNull
     private String tipoCuenta;
-    @NotNull
     private BigDecimal saldoInicial;
-    @NotNull
     private String estado;
 }
