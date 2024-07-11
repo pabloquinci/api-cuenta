@@ -47,7 +47,7 @@ public class MovimientoService {
 
     public Optional<CreacionMovimientoResponseDTO> crear(CreacionMovimientoDTO creacionMovimientoDTO){
 
-        Cuenta cuenta=cuentaRepository.findById(creacionMovimientoDTO.getIdCuenta())
+        Cuenta cuenta=cuentaRepository.findByNumCuenta(creacionMovimientoDTO.getNumCuenta())
                 .orElseThrow((()-> new CuentaNotFoundExcdeption()));
         Movimiento movimientoDao= Movimiento.builder()
                 .saldo(creacionMovimientoDTO.getSaldo())
@@ -67,13 +67,13 @@ public class MovimientoService {
 
     }
 
-    public List<Movimiento> getMovimientos(Long idCliente, Date fechaDesde, Date fechaHasta){
-        List<Movimiento> response= this.movimientoRepository.findMov(fechaDesde, fechaHasta);
+    public List<Movimiento> getMovimientos(Integer numCuenta, Date fechaDesde, Date fechaHasta){
+        List<Movimiento> response= this.movimientoRepository.findMov(numCuenta,fechaDesde, fechaHasta);
 
 
         CuentaEvent event = new CuentaEvent();
         event.setStatus("PENDING");
-        event.setMessage("Order is in pending status");
+        event.setMessage("Solicitando info usuario");
         event.setCuenta(CuentaDTO.builder()
                 .idCuenta(response.get(0).getCuenta().getIdCuenta())
                         .dni(response.get(0).getCuenta().getDniCliente())

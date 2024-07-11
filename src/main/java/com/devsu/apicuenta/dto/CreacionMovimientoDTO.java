@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 
 public class CreacionMovimientoDTO {
     @NotNull
-    private Long idCuenta;
+    private Integer numCuenta;
     @NotNull
     private BigDecimal saldo;
     @NotNull

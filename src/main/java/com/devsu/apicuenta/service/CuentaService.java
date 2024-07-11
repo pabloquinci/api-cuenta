@@ -31,6 +31,7 @@ public class CuentaService {
                 .numCuenta(creacionCuentaDTO.getNumCuenta())
                 .saldoInicial(creacionCuentaDTO.getSaldoInicial())
                 .saldoDisponible(creacionCuentaDTO.getSaldoInicial())
+                .dniCliente(creacionCuentaDTO.getDniCliente())
                 .estado("OK")
                 .build();
 
