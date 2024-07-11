@@ -23,4 +23,6 @@ public class CreacionCuentaDTO {
     private BigDecimal saldoInicial;
     @NotNull
     private String estado;
+    @NotNull
+    private Integer dniCliente;
 }

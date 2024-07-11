@@ -44,14 +44,14 @@ public class MovimientoController {
     }
 
     @GetMapping("/getMovimientos")
-    private ResponseEntity<List<Movimiento>> getMovimientos(@RequestParam("idCliente")Long idCliente,
+    private ResponseEntity<List<Movimiento>> getMovimientos(@RequestParam("numCuenta")Integer numCuenta,
                                                               @RequestParam("fechaDesde") String fechaDesde,
                                                               @RequestParam("fechaHasta") String fechaHasta) throws ParseException {
 
         Date dt=new SimpleDateFormat("yyyy-MM-dd").parse(fechaDesde);
         Date dt2=new SimpleDateFormat("yyyy-MM-dd").parse(fechaHasta);
 
-        List<Movimiento> resultado= movimientoService.getMovimientos(idCliente,dt, dt2);
+        List<Movimiento> resultado= movimientoService.getMovimientos(numCuenta,dt, dt2);
             return ResponseEntity.ok(resultado);
     }
 /*

@@ -14,6 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface MovimientoRepository extends CrudRepository<Movimiento, Long> {
-    @Query("SELECT u FROM Movimiento u WHERE u.fecha BETWEEN :fechaDesde AND :fechaHasta ")
-    public List<Movimiento> findMov(@Param("fechaDesde") Date fechaDesde, @Param("fechaHasta") Date fechaHasta);
+    @Query("SELECT u FROM Movimiento u WHERE u.cuenta.numCuenta=:numCuenta AND u.fecha BETWEEN :fechaDesde AND :fechaHasta ")
+    public List<Movimiento> findMov(@Param ("numCuenta") Integer numCuenta,@Param("fechaDesde") Date fechaDesde, @Param("fechaHasta") Date fechaHasta);
 }
