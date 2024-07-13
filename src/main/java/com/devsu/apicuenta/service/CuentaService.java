@@ -18,6 +18,7 @@ public class CuentaService {
 
     CuentaRepository cuentaRepository;
 
+    public static final String EDICION_OK="Edicion OK";
 
     @Autowired
     public CuentaService(CuentaRepository cuentaRepository) {
@@ -53,37 +54,36 @@ public class CuentaService {
         cuentaUpdate.setTipoCuenta(!Strings.isEmpty(cuentaEdicionDTO.getTipoCuenta()) ?cuentaEdicionDTO.getTipoCuenta() :null);
         this.cuentaRepository.save(cuentaUpdate);
 
-        return Optional.of(ResultadoResponseDTO.builder().resultado("Edicion OK").build());
+        return Optional.of(ResultadoResponseDTO.builder().resultado(EDICION_OK).build());
     }
 
     public Optional<ResultadoResponseDTO> actualizar(Map<String, String> cuentaaUpdateDTO, Integer numCuenta){
         Cuenta cuentaUpdate=this.cuentaRepository.findByNumCuenta(numCuenta)
-                .orElseThrow(()-> new CuentaNotFoundExcdeption());
+                .orElseThrow(CuentaNotFoundExcdeption::new);
 
         cuentaaUpdateDTO.forEach((clave, valor)->{
 
             switch(clave){
                 case "numCuenta" -> cuentaUpdate.setNumCuenta(Integer.valueOf(valor));
-                case "estado" -> cuentaUpdate.setEstado((String)(valor));
+                case "estado" -> cuentaUpdate.setEstado(valor);
                 case "saldoInicial" -> cuentaUpdate.setSaldoInicial(new BigDecimal(valor));
-                case "tipoCuenta" -> cuentaUpdate.setTipoCuenta((String)valor);
+                case "tipoCuenta" -> cuentaUpdate.setTipoCuenta(valor);
             }
 
         });
 
         this.cuentaRepository.save(cuentaUpdate);
 
-        return Optional.of(ResultadoResponseDTO.builder().resultado("Edicion OK").build());
+        return Optional.of(ResultadoResponseDTO.builder().resultado(EDICION_OK).build());
 
     }
 
-//    @Cacheable(cacheNames = CacheConfig.USER_CACHE, unless = "#result == null")
     @Cacheable(cacheNames = CacheConfig.CUENTA_CACHE, unless = "#result == null")
     public Optional<CuentasResponseDTO> getCuentas(){
 
         List<Cuenta> cuentas=this.cuentaRepository.findAll();
         CuentasResponseDTO cuentasDTO=CuentasResponseDTO.builder().cuentas(new ArrayList<>()).build();
-        if(cuentas.size()!=0){
+        if(!cuentas.isEmpty()){
             cuentas
                     .stream()
                     .forEach(cuenta->{
@@ -102,10 +102,10 @@ public class CuentaService {
 
     public Optional<ResultadoResponseDTO> borrar(Integer numCuenta){
         Cuenta cuentaUpdate=this.cuentaRepository.findByNumCuenta(numCuenta)
-                .orElseThrow(()-> new CuentaNotFoundExcdeption());
+                .orElseThrow(CuentaNotFoundExcdeption::new);
         this.cuentaRepository.delete(cuentaUpdate);
 
-        return Optional.of(ResultadoResponseDTO.builder().resultado("Edicion OK").build());
+        return Optional.of(ResultadoResponseDTO.builder().resultado(EDICION_OK).build());
     }
 
 

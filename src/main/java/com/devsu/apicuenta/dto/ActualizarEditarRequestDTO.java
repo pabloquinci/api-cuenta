@@ -1,7 +1,5 @@
 package com.devsu.apicuenta.dto;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

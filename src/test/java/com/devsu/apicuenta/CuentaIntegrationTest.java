@@ -29,7 +29,7 @@ public class CuentaIntegrationTest {
     private MockMvc mvc;
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 

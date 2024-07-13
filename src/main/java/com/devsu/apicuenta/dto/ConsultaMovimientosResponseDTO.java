@@ -1,9 +1,6 @@
 package com.devsu.apicuenta.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +11,7 @@ import java.util.List;
 public class ConsultaMovimientosResponseDTO {
     List<MovimientoDTO> movimientos=new ArrayList<>();
 
+    @Autowired
     public ConsultaMovimientosResponseDTO( List<MovimientoDTO> movimientos){
         this.movimientos=movimientos;
     }

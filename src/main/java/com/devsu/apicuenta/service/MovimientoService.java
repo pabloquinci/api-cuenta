@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -32,13 +31,12 @@ public class MovimientoService {
     @Value("${rabbitmq.binding.routing.key}")
     private String orderRoutingKey;
 
-    @Autowired
-    private Environment environment;
     ConsultaMovimientosResponseDTO consultaMovimientosResponseDTO= new ConsultaMovimientosResponseDTO();
 
     Model model;
 
     private RabbitTemplate rabbitTemplate;
+
 
 
 
@@ -56,7 +54,7 @@ public class MovimientoService {
     public Optional<CreacionMovimientoResponseDTO> crear(CreacionMovimientoDTO creacionMovimientoDTO){
 
         Cuenta cuenta=cuentaRepository.findByNumCuenta(creacionMovimientoDTO.getNumCuenta())
-                .orElseThrow((()-> new CuentaNotFoundExcdeption()));
+                .orElseThrow(CuentaNotFoundExcdeption::new);
         if(cuenta.getSaldoDisponible().compareTo(creacionMovimientoDTO.getValor())<0){
             throw  new SinSaldoException();
         }
@@ -79,12 +77,11 @@ public class MovimientoService {
     }
     @Cacheable(cacheNames = CacheConfig.CUENTA_CACHE, unless = "#result == null")
     public Optional<ConsultaMovimientosResponseDTO> getMovimientos(Integer numCuenta, Date fechaDesde, Date fechaHasta,Model model){
-        //ConsultaMovimientosResponseDTO consultaMovimientosResponseDTO= new ConsultaMovimientosResponseDTO();
         consultaMovimientosResponseDTO.setMovimientos(new ArrayList<>());
         List<Movimiento> response= this.movimientoRepository.findMov(numCuenta,fechaDesde, fechaHasta)
-                .orElseThrow((()-> new MovimientosException()));
+                .orElseThrow(MovimientosException::new);
 
-        if(response.size()==0){
+        if(response.isEmpty()){
             throw new MovimientosException();
         }
 
