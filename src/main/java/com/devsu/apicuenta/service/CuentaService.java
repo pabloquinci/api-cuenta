@@ -25,14 +25,16 @@ public class CuentaService {
     }
 
     public Optional<CreacionCuentaResponseDTO> crear(CreacionCuentaDTO creacionCuentaDTO){
+        Random rand = new Random();
 
         Cuenta cuentaDao= Cuenta.builder()
+                //.estado(creacionCuentaDTO.getEstado())
                 .estado(creacionCuentaDTO.getEstado())
-                .numCuenta(creacionCuentaDTO.getNumCuenta())
+                .numCuenta(rand.nextInt(100)+1)
                 .saldoInicial(creacionCuentaDTO.getSaldoInicial())
                 .saldoDisponible(creacionCuentaDTO.getSaldoInicial())
                 .dniCliente(creacionCuentaDTO.getDniCliente())
-                .estado("OK")
+                .tipoCuenta(creacionCuentaDTO.getTipoCuenta())
                 .build();
 
         this.cuentaRepository.save(cuentaDao);
@@ -46,7 +48,7 @@ public class CuentaService {
                 .orElseThrow(()-> new CuentaNotFoundExcdeption());
 
         cuentaUpdate.setNumCuenta(!Objects.isNull(cuentaEdicionDTO.getNumCuenta()) ? cuentaEdicionDTO.getNumCuenta() :null);
-        cuentaUpdate.setEstado(!Strings.isEmpty(cuentaEdicionDTO.getEstado()) ?cuentaEdicionDTO.getEstado() :null);
+        cuentaUpdate.setEstado(!Objects.isNull(cuentaEdicionDTO.getEstado()) ?cuentaEdicionDTO.getEstado() :null);
         cuentaUpdate.setSaldoInicial(!Objects.isNull(cuentaEdicionDTO.getSaldoInicial()) ?cuentaEdicionDTO.getSaldoInicial() :null );
         cuentaUpdate.setTipoCuenta(!Strings.isEmpty(cuentaEdicionDTO.getTipoCuenta()) ?cuentaEdicionDTO.getTipoCuenta() :null);
         this.cuentaRepository.save(cuentaUpdate);
@@ -62,7 +64,7 @@ public class CuentaService {
 
             switch(clave){
                 case "numCuenta" -> cuentaUpdate.setNumCuenta(Integer.valueOf(valor));
-                case "estado" -> cuentaUpdate.setEstado((String)valor);
+                case "estado" -> cuentaUpdate.setEstado((String)(valor));
                 case "saldoInicial" -> cuentaUpdate.setSaldoInicial(new BigDecimal(valor));
                 case "tipoCuenta" -> cuentaUpdate.setTipoCuenta((String)valor);
             }
@@ -87,6 +89,7 @@ public class CuentaService {
                     .forEach(cuenta->{
                         cuentasDTO.getCuentas().add(CuentaResponseDTO.builder()
                                 .tipoCuenta(cuenta.getTipoCuenta())
+                                        .numCuenta(cuenta.getNumCuenta())
                                 .idCuenta(cuenta.getIdCuenta())
                                 .saldoInicial(cuenta.getSaldoInicial())
                                 .estado(cuenta.getEstado())

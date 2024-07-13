@@ -15,8 +15,9 @@ public class MovimientoDTO {
     private String cliente;
     private Integer numCuenta;
     private String tipoCuenta;
+    private String descripcion;
     private BigDecimal saldoInicial;
-    private Boolean estado;
+    private String estado;
     private BigDecimal getSaldoDisponible;
     private Cuenta cuenta;
 }
