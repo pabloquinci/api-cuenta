@@ -39,13 +39,13 @@ public class ClienteConsumer {
         LOGGER.info("**********************************************************");
         this.consultaMovimientosResponseDTO.getMovimientos().forEach(m->{
             LOGGER.info("===========================================");
-            LOGGER.info("Fecha: %s", m.getFecha());
-            LOGGER.info("Num CUenta: %d", m.getNumCuenta());
-            LOGGER.info("Tipo Cuenta: %s" + m.getTipoCuenta());
-            LOGGER.info("Saldo Inicial: %s", m.getSaldoInicial());
-            LOGGER.info("Saldo Disponible: %d",  m.getGetSaldoDisponible());
-            LOGGER.info("Estado: %s", m.getEstado());
-            LOGGER.info("Movimiento: %d" + m.getValorMovimiento());
+            LOGGER.info("Fecha: "+m.getFecha());
+            LOGGER.info("Num CUenta: " + m.getNumCuenta());
+            LOGGER.info("Tipo Cuenta: " + m.getTipoCuenta());
+            LOGGER.info("Saldo Inicial: " + m.getSaldoInicial());
+            LOGGER.info("Saldo Disponible: " +  m.getGetSaldoDisponible());
+            LOGGER.info("Estado: "+ m.getEstado());
+            LOGGER.info("Movimiento: " + m.getValorMovimiento());
             LOGGER.info("===========================================");
         });
     }
