@@ -1,7 +1,10 @@
 package com.devsu.apicuenta.service;
 
+import com.devsu.apicuenta.configuration.CacheConfig;
 import com.devsu.apicuenta.dto.*;
 import com.devsu.apicuenta.exception.CuentaNotFoundExcdeption;
+import com.devsu.apicuenta.exception.MovimientosException;
+import com.devsu.apicuenta.exception.SinSaldoException;
 import com.devsu.apicuenta.model.Cuenta;
 import com.devsu.apicuenta.model.ETipoMovimiento;
 import com.devsu.apicuenta.model.Movimiento;
@@ -10,17 +13,17 @@ import com.devsu.apicuenta.repository.MovimientoRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
+import java.util.*;
 
 @Service
+@SessionAttributes("consultaMovimientosResponseDTO")
 public class MovimientoService {
 
     @Value("${rabbitmq.exchange.name}")
@@ -29,6 +32,11 @@ public class MovimientoService {
     @Value("${rabbitmq.binding.routing.key}")
     private String orderRoutingKey;
 
+    @Autowired
+    private Environment environment;
+    ConsultaMovimientosResponseDTO consultaMovimientosResponseDTO= new ConsultaMovimientosResponseDTO();
+
+    Model model;
 
     private RabbitTemplate rabbitTemplate;
 
@@ -49,6 +57,9 @@ public class MovimientoService {
 
         Cuenta cuenta=cuentaRepository.findByNumCuenta(creacionMovimientoDTO.getNumCuenta())
                 .orElseThrow((()-> new CuentaNotFoundExcdeption()));
+        if(cuenta.getSaldoDisponible().compareTo(creacionMovimientoDTO.getValor())<0){
+            throw  new SinSaldoException();
+        }
         Movimiento movimientoDao= Movimiento.builder()
                 .saldo(creacionMovimientoDTO.getSaldo())
                 .valor(creacionMovimientoDTO.getValor())
@@ -66,29 +77,55 @@ public class MovimientoService {
         return Optional.of(CreacionMovimientoResponseDTO.builder().status("OK").build());
 
     }
+    @Cacheable(cacheNames = CacheConfig.CUENTA_CACHE, unless = "#result == null")
+    public Optional<ConsultaMovimientosResponseDTO> getMovimientos(Integer numCuenta, Date fechaDesde, Date fechaHasta,Model model){
+        //ConsultaMovimientosResponseDTO consultaMovimientosResponseDTO= new ConsultaMovimientosResponseDTO();
+        consultaMovimientosResponseDTO.setMovimientos(new ArrayList<>());
+        List<Movimiento> response= this.movimientoRepository.findMov(numCuenta,fechaDesde, fechaHasta)
+                .orElseThrow((()-> new MovimientosException()));
 
-    public List<Movimiento> getMovimientos(Integer numCuenta, Date fechaDesde, Date fechaHasta){
-        List<Movimiento> response= this.movimientoRepository.findMov(numCuenta,fechaDesde, fechaHasta);
-
+        if(response.size()==0){
+            throw new MovimientosException();
+        }
 
         CuentaEvent event = new CuentaEvent();
         event.setStatus("PENDING");
         event.setMessage("Solicitando info usuario");
+        response.stream().forEach(m->{
+            consultaMovimientosResponseDTO.getMovimientos().add(MovimientoDTO.
+                    builder()
+                            .descripcion(m.getDescripcion())
+                            .tipoCuenta(m.getCuenta().getTipoCuenta())
+                            .valorMovimiento(m.getValor())
+                            .estado(m.getCuenta().getEstado())
+                            .fecha(m.getFecha())
+                            .tipoCuenta(m.getCuenta().getTipoCuenta())
+                            .saldoInicial(m.getCuenta().getSaldoInicial())
+                            .numCuenta(m.getCuenta().getNumCuenta())
+                            .tipoCuenta(m.getCuenta().getTipoCuenta())
+                    .build());
+
+        });
         event.setCuenta(CuentaDTO.builder()
                 .idCuenta(response.get(0).getCuenta().getIdCuenta())
                         .dni(response.get(0).getCuenta().getDniCliente())
                         .numCuenta(response.get(0).getCuenta().getNumCuenta())
-                        .dni(response.get(0).getCuenta().getDniCliente())
                 .build());
         sendMessage(event);
+        model.addAttribute(consultaMovimientosResponseDTO);
 
-        return response;
+        return Optional.of(consultaMovimientosResponseDTO);
 
     }
 
-    public void sendMessage(CuentaEvent orderEvent){
+    //Este bean se define para inyectar los movimientos en el consumer
+    @Bean
+    public ConsultaMovimientosResponseDTO consultaMovimientosResponseDTO(){
+        return consultaMovimientosResponseDTO;
+    }
 
-        // send an order event to order queue
+
+    public void sendMessage(CuentaEvent orderEvent){
         rabbitTemplate.convertAndSend(exchange, orderRoutingKey, orderEvent);
 
     }

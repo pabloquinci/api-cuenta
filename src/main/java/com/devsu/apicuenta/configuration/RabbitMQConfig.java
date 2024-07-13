@@ -20,7 +20,10 @@ public class RabbitMQConfig {
 
     @Value("${rabbitmq.binding.routing.key}")
     private String orderRoutingKey;
-
+    @Bean
+    public Queue cuenta() {
+        return new Queue("cuenta", true); // Cola durable
+    }
 
     // spring bean for queue - order queue
     @Bean

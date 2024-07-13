@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -44,14 +45,14 @@ public class MovimientoController {
     }
 
     @GetMapping("/getMovimientos")
-    private ResponseEntity<List<Movimiento>> getMovimientos(@RequestParam("numCuenta")Integer numCuenta,
-                                                              @RequestParam("fechaDesde") String fechaDesde,
-                                                              @RequestParam("fechaHasta") String fechaHasta) throws ParseException {
+    private ResponseEntity<ConsultaMovimientosResponseDTO> getMovimientos(@RequestParam("numCuenta")Integer numCuenta,
+                                                                          @RequestParam("fechaDesde") String fechaDesde,
+                                                                          @RequestParam("fechaHasta") String fechaHasta, Model model) throws ParseException {
 
         Date dt=new SimpleDateFormat("yyyy-MM-dd").parse(fechaDesde);
         Date dt2=new SimpleDateFormat("yyyy-MM-dd").parse(fechaHasta);
 
-        List<Movimiento> resultado= movimientoService.getMovimientos(numCuenta,dt, dt2);
+        ConsultaMovimientosResponseDTO resultado= movimientoService.getMovimientos(numCuenta,dt, dt2,model).get();
             return ResponseEntity.ok(resultado);
     }
 /*
