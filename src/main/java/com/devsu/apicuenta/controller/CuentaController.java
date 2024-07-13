@@ -1,10 +1,8 @@
 package com.devsu.apicuenta.controller;
 
-import com.devsu.apicuenta.configuration.CacheConfig;
 import com.devsu.apicuenta.dto.*;
 import com.devsu.apicuenta.service.CuentaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +13,12 @@ import java.util.Optional;
 @RequestMapping("/cuenta")
 public class CuentaController {
 
-    @Autowired
     CuentaService cuentaService;
+
+    @Autowired
+    public CuentaController(CuentaService cuentaService) {
+        this.cuentaService=cuentaService;
+    }
 
 
     @PostMapping("/crear")
@@ -32,18 +34,18 @@ public class CuentaController {
     }
 
     @PutMapping("/editar")
-    private ResponseEntity editar(@RequestBody ActualizarEditarRequestDTO request) {
+    public ResponseEntity<ResultadoResponseDTO> editar(@RequestBody ActualizarEditarRequestDTO request) {
 
         Optional<ResultadoResponseDTO> response=cuentaService.editar(request);
 
         if (response.isPresent()){
             return ResponseEntity.ok(response.get());
         }
-        return ResponseEntity.internalServerError().body("Error");
+        return ResponseEntity.internalServerError().body(ResultadoResponseDTO.builder().build());
 
     }
     @PatchMapping("/actualizar/{numCuenta}")
-    private ResponseEntity<ResultadoResponseDTO>actualizar(@RequestBody Map<String, String> request, @PathVariable("numCuenta")  Integer numCuenta){
+    public ResponseEntity<ResultadoResponseDTO>actualizar(@RequestBody Map<String, String> request, @PathVariable("numCuenta")  Integer numCuenta){
 
         Optional<ResultadoResponseDTO> resultado=cuentaService.actualizar(request, numCuenta);
         if(resultado.isPresent()){
@@ -53,7 +55,7 @@ public class CuentaController {
     }
 
     @GetMapping("/getCuentas")
-    private ResponseEntity<CuentasResponseDTO> getCuentas() {
+    public ResponseEntity<CuentasResponseDTO> getCuentas() {
         Optional<CuentasResponseDTO> resultado= cuentaService.getCuentas();
         if(resultado.isPresent()){
             return ResponseEntity.ok(resultado.get());
@@ -62,7 +64,7 @@ public class CuentaController {
     }
 
     @DeleteMapping("/borrar/{numCuenta}")
-    private ResponseEntity<ResultadoResponseDTO> borrar(@PathVariable("numCuenta") Integer numCuenta){
+    public ResponseEntity<ResultadoResponseDTO> borrar(@PathVariable("numCuenta") Integer numCuenta){
         return ResponseEntity.ok(cuentaService.borrar(numCuenta).get());
     }
 }

@@ -1,6 +1,5 @@
 package com.devsu.apicuenta.dto;
 
-import com.devsu.apicuenta.model.Cuenta;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

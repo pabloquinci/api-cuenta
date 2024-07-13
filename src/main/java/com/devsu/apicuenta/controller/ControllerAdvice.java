@@ -13,16 +13,16 @@ public class ControllerAdvice {
 
     @ExceptionHandler(CuentaNotFoundExcdeption.class)
     protected ResponseEntity<String> userException(CuentaNotFoundExcdeption ex){
-        return new ResponseEntity<String>("Error: La cuenta que quiere editar o actualizar no existe", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Error: La cuenta que quiere editar o actualizar no existe", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MovimientosException.class)
     protected ResponseEntity<String> userException(MovimientosException ex){
-        return new ResponseEntity<String>("La cuenta no existe o no tiene movimientos", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("La cuenta no existe o no tiene movimientos", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(SinSaldoException.class)
     protected ResponseEntity<String> userException(SinSaldoException ex){
-        return new ResponseEntity<String>("No hay saldo disponible para realizar el movimiento", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("No hay saldo disponible para realizar el movimiento", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

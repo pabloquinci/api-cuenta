@@ -1,7 +1,5 @@
 package com.devsu.apicuenta.model;
 
-import jakarta.persistence.Entity;
-
 public enum ETipoMovimiento {
     DEPOSITO("Deposito",1), EXTRACCION("Extraccion",2);
 
