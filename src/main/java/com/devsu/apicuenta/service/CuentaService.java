@@ -83,7 +83,7 @@ public class CuentaService {
 
         List<Cuenta> cuentas=this.cuentaRepository.findAll();
         CuentasResponseDTO cuentasDTO=CuentasResponseDTO.builder().cuentas(new ArrayList<>()).build();
-        if(cuentas.isEmpty()){
+        if(!cuentas.isEmpty()){
             cuentas
                     .stream()
                     .forEach(cuenta->{
